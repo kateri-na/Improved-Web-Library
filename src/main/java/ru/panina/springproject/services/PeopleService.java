@@ -1,11 +1,14 @@
 package ru.panina.springproject.services;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.panina.springproject.models.Person;
 import ru.panina.springproject.repositories.PeopleRepository;
 import ru.panina.springproject.models.Book;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,10 +48,11 @@ public class PeopleService {
     }
 
     public List<Book> findAllBooks(int id){
-        Person foundOwner = peopleRepository.findById(id).orElse(null);
-        if(foundOwner != null){
-            return foundOwner.getBooks();
+        Person person = peopleRepository.findById(id).orElse(null);
+        if(person != null){
+            Hibernate.initialize(person.getBooks());
+            return person.getBooks();
         }
-        else return null;
+        else return new ArrayList<>();
     }
 }
