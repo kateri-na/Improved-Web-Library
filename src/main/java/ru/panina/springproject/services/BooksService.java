@@ -1,6 +1,8 @@
 package ru.panina.springproject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.panina.springproject.models.Book;
@@ -21,6 +23,24 @@ public class BooksService {
 
     public List<Book> findAll(){
         return booksRepository.findAll();
+    }
+
+    public List<Book> findAll(String sort_by_year){
+        if(sort_by_year.equals("true"))
+            return booksRepository.findAll(Sort.by("year"));
+        else
+            return findAll();
+    }
+
+    public List<Book> findAll(int page, int books_per_page){
+        return booksRepository.findAll(PageRequest.of(page, books_per_page)).getContent();
+    }
+
+    public List<Book> findAll(int page, int books_per_page, String sort_by_year){
+        if(sort_by_year.equals("true"))
+            return booksRepository.findAll(PageRequest.of(page, books_per_page, Sort.by("year"))).getContent();
+        else
+            return findAll(page, books_per_page);
     }
 
     @Transactional
