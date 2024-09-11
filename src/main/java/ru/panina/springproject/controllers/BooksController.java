@@ -57,8 +57,14 @@ public class BooksController {
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model, @ModelAttribute("person") Person person){
         model.addAttribute("book", booksService.findById(id));
-        model.addAttribute("people", peopleService.findAll());
-        model.addAttribute("owner", booksService.findOwner(id));
+
+        Person owner = booksService.findOwner(id);
+        if (owner == null){
+            model.addAttribute("people", peopleService.findAll());
+        }
+        else
+            model.addAttribute("owner", owner);
+
         return "books/show";
     }
     @DeleteMapping("/{id}")

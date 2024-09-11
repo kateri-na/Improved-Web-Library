@@ -7,21 +7,27 @@
 <body>
 <p th:text="${book.getTitle()} + ', ' + ${book.getAuthor()} + ', ' + ${book.getYear()}">Info</p>
 
-<p th:if="${book.getPersonId() == 0}">Эта книга свободна. Кому назначить её?</p>
-<form th:if="${book.getPersonId() == 0}" th:method="PATCH" th:action="@{/books/{id}/appoint(id = ${book.getId()})}" th:object="${book}">
-    <label for="person">Выберите человека</label>
-    <select th:object="${person}" th:field="*{id}" id = "person">
-        <option th:each="person : ${people}" th:value="${person.getId()}"
-                th:text="${person.getName()}"></option>
-    </select>
-    <input type="submit" value="Назначить книгу">
-</form>
+<div th:if="${people}">
+    <hr/>
+    <p>Эта книга свободна. Кому назначить её?</p>
+    <form th:method="PATCH" th:action="@{/books/{id}/appoint(id = ${book.getId()})}" th:object="${book}">
+        <label for="person">Выберите человека</label>
+        <select th:object="${person}" th:field="*{id}" id = "person">
+            <option th:each="person : ${people}" th:value="${person.getId()}"
+                    th:text="${person.getName()}"></option>
+        </select>
+        <input type="submit" value="Назначить книгу">
+    </form>
+</div>
 
-<p th:if="${book.getPersonId() != 0}">Книга сейчас у: </p>
-<p th:if="${book.getPersonId() != 0}" th:utext="${owner.getName()}"></p>
-<form th:if="${book.getPersonId() != 0}" th:method="PATCH" th:action="@{/books/{id}/free(id = ${book.getId()})}" th:object="${book}">
-    <input type="submit" value="Освободить книгу">
-</form>
+<div th:if="${owner}">
+    <hr/>
+    <p>Книга сейчас у: </p>
+    <p th:utext="${owner.getName()}"></p>
+    <form th:method="PATCH" th:action="@{/books/{id}/free(id = ${book.getId()})}" th:object="${book}">
+        <input type="submit" value="Освободить книгу">
+    </form>
+</div>
 
 <br/>
 <hr/>
