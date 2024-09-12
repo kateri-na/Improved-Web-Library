@@ -9,7 +9,9 @@ import ru.panina.springproject.models.Book;
 import ru.panina.springproject.models.Person;
 import ru.panina.springproject.repositories.BooksRepository;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional(readOnly = true)
@@ -75,6 +77,7 @@ public class BooksService {
     public void appoint(Person person, int id){
         Book appointedBook = booksRepository.findById(id).orElse(null);
         if(appointedBook != null) {
+            appointedBook.setTakenAt(new Date());
             appointedBook.setOwner(person);
             booksRepository.save(appointedBook);
         }
@@ -84,6 +87,7 @@ public class BooksService {
     public void free(int id){
         Book freeBook = booksRepository.findById(id).orElse(null);
         if(freeBook != null) {
+            freeBook.setTakenAt(null);
             freeBook.setOwner(null);
             booksRepository.save(freeBook);
         }
@@ -91,5 +95,16 @@ public class BooksService {
 
     public List<Book> findAllByTitle(String title){
         return booksRepository.findByTitleStartingWith(title);
+    }
+
+    public List<Book> calculateOverdue(List<Book> books){
+        Date now = new Date();
+        for(Book book : books) {
+            long overdueInMillis = Math.abs(now.getTime() - book.getTakenAt().getTime());
+            long overdue = TimeUnit.DAYS.convert(overdueInMillis, TimeUnit.MILLISECONDS);
+            if (overdue > 10)
+                book.setOverdue(true);
+        }
+        return books;
     }
 }

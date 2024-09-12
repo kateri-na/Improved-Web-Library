@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.panina.springproject.models.Person;
+import ru.panina.springproject.services.BooksService;
 import ru.panina.springproject.services.PeopleService;
 import ru.panina.springproject.util.PersonValidator;
 
@@ -15,11 +16,13 @@ import ru.panina.springproject.util.PersonValidator;
 public class PeopleController {
     private final PeopleService peopleService;
     private final PersonValidator personValidator;
+    private final BooksService booksService;
 
     @Autowired
-    public PeopleController(PeopleService peopleService, PersonValidator personValidator) {
+    public PeopleController(PeopleService peopleService, PersonValidator personValidator, BooksService booksService) {
         this.peopleService = peopleService;
         this.personValidator = personValidator;
+        this.booksService = booksService;
     }
     @GetMapping()
     public String index(Model model) {
@@ -57,7 +60,7 @@ public class PeopleController {
     @GetMapping("/{id}")
     public String show(@PathVariable("id")int id, Model model){
         model.addAttribute("person", peopleService.findById(id));
-        model.addAttribute("books", peopleService.findAllBooks(id));
+        model.addAttribute("books", booksService.calculateOverdue(peopleService.findAllBooks(id)));
         return "people/show";
     }
     @DeleteMapping("/{id}")

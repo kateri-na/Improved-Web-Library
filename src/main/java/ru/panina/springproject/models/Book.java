@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import java.util.Date;
 
 @Entity
 @Table(name = "book")
@@ -29,6 +30,13 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person owner;
+
+    @Column(name = "taken_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date takenAt;
+
+    @Transient
+    private boolean isOverdue;
 
     public Book() {}
 
@@ -78,4 +86,19 @@ public class Book {
         this.owner = owner;
     }
 
+    public Date getTakenAt() {
+        return takenAt;
+    }
+
+    public void setTakenAt(Date takenAt) {
+        this.takenAt = takenAt;
+    }
+
+    public boolean isOverdue() {
+        return isOverdue;
+    }
+
+    public void setOverdue(boolean overdue) {
+        isOverdue = overdue;
+    }
 }
