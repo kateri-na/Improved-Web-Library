@@ -93,4 +93,12 @@ public class BooksController {
         booksService.free(id);
         return "redirect:/books/{id}";
     }
+
+    @GetMapping("/search")
+    public String search(@RequestParam(name = "query", required = false) String query, Model model) {
+        if(query != null) {
+            model.addAttribute("foundBooks", booksService.findAllByTitle(query));
+        }
+        return "books/search";
+    }
 }

@@ -88,4 +88,8 @@ public class BooksService {
             booksRepository.save(freeBook);
         }
     }
+
+    public List<Book> findAllByTitle(String title){
+        return booksRepository.findByTitleStartingWith(title);
+    }
 }
