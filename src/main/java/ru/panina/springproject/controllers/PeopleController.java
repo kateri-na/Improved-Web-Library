@@ -6,10 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.panina.springproject.models.Book;
 import ru.panina.springproject.models.Person;
 import ru.panina.springproject.services.BooksService;
 import ru.panina.springproject.services.PeopleService;
 import ru.panina.springproject.util.PersonValidator;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/people")
@@ -60,7 +63,9 @@ public class PeopleController {
     @GetMapping("/{id}")
     public String show(@PathVariable("id")int id, Model model){
         model.addAttribute("person", peopleService.findById(id));
-        model.addAttribute("books", booksService.calculateOverdue(peopleService.findAllBooks(id)));
+        List<Book> books = peopleService.findAllBooks(id);
+        booksService.calculateOverdue(books);
+        model.addAttribute("books", books);
         return "people/show";
     }
     @DeleteMapping("/{id}")

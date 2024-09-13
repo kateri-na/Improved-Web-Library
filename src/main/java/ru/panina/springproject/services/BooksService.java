@@ -97,7 +97,7 @@ public class BooksService {
         return booksRepository.findByTitleStartingWith(title);
     }
 
-    public List<Book> calculateOverdue(List<Book> books){
+    public void calculateOverdue(List<Book> books){
         Date now = new Date();
         for(Book book : books) {
             long overdueInMillis = Math.abs(now.getTime() - book.getTakenAt().getTime());
@@ -105,6 +105,5 @@ public class BooksService {
             if (overdue > 10)
                 book.setOverdue(true);
         }
-        return books;
     }
 }
